@@ -1,0 +1,915 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{datetime} %for todays date in info
+\usepackage[pdfborder={0 0 0}]{hyperref}%to link toc to document
+\usepackage{graphicx}
+\usepackage{float}
+
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\deriv}[2]{\frac{d #1}{d #2}}
+
+\DeclareMathOperator \dotprod{\cdot}
+
+%\DeclareMathOperator \det{det}
+
+\usepackage[left=.75in, top=.5in, right=.75in, nohead]{geometry}%,nofoot
+
+\pdfinfo{
+   /Author (David Doria)
+   /Title  (Linear Algebra Primer)
+   /CreationDate (D:\pdfdate)
+   /Subject (Linear Algebra)
+}
+
+\begin{document}
+
+\title{Linear Algebra Primer}
+\author{David Doria\\daviddoria@gmail.com}
+\maketitle
+
+\tableofcontents
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Why is it called ``Linear Algebra''?}
+Linear algebra is the study of linear functions/equations. A linear equation is one in which each term is either a constant or the product of a constant and the first power of a single variable. A linear function is one which obeys the two properties $f(x) + f(y) = f(x+y)$ and $f(\alpha x) = \alpha f(x)$.
+These equations can always be written in the form
+\begin{equation*}
+a x_3 + b x_2 + c x_1 + x_0 = 0
+\end{equation*}
+If an equation cannot be written in this form, it is not linear.
+
+The name ``linear'' comes from the two variable case $x_2 + x_1 + c = 0$, because the set of all solutions to this equation forms a line.  In general, the solution to an $n$th order linear equation is a hyperplane of dimension $n-1$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{What is a Matrix?}
+A matrix is simply a function.  We are used to the notation $y = f(x)$, where the input $x$ is operated on by the function $f$ to produce a value $y$.  A matrix is just one particular type of function.  The notation used is $Fx = y$, where $F$ is the matrix, but generally captial letters at the beginning of the alphabet are used to represent matrices, so you will often see $Ax = b$ instead.
+
+\subsection{Input and Output}
+A matrix is a function that takes a vector as input and produces a new vector as output.  The input and output vectors are constrained to be a particular size, given by the number of columns and number of rows of the matrix, respectively. The size of a matrix is stated as m x n (read ``m by n''), where $m$ is the number of rows, and $n$ is the number of columns.
+
+\subsubsection{Example}
+A 4x3 matrix takes vectors of length 3 as input and produces vectors of length 4.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Definitions}
+\subsection{Linear Independence}
+The only solution to $Ax = 0$ is $x = 0$. Cannot combine any of the vectors with any weights to obtain 0, ie. vectors are not multiples of each other and can not be formed by any combination of the other vectors.
+
+\subsection{Vector Space}
+A set of vectors which has defined scalar multiplication and vector addition. A vector space must contain the zero element so that it is ``closed'' under addition. This means that if you add two vectors in the space, the result must also be in the space.  This is impossible if it does not contain $0$ because if you add $a$ and $-a$, you get $0$.
+
+\subsection{Basis}
+$n$ independent vectors that span a space exactly $n$ dimensional.  If there are $n+1$ or more vectors in an $n$ dimensional space, then there are ``too many'', which means they cannot be linearly independent. If there are ``not enough'' (less than $n$) vectors, then they cannot span the space.
+
+
+
+
+\section{Matrix Terminology}
+\begin{itemize}
+\item Minor: The determinant of a submatrix.
+
+\item Principal minor: If a minor came from a submatrix where the list of indices of the rows used is the same as the list of indices of the columns used.
+
+\item Leading principal minor: a minor that came from the top left corner of a matrix (a principal minor where the index list that is shared by rows and colums is {1,2,3,..., k}.
+
+\item Positive definite: All leading principal minors are positive. This means for any vector $x$, $x^T A x > 0$.
+
+\item Positive semi-definite: All leading principal minors are positive. This means for any vector $x$, $x^T A x \geq 0$.
+
+\item Negative definite: All $k$th order leading principal minors are negative if k is odd and positive if k is even. This means for any vector $x$, $x^T A x < 0$.
+
+\item Negative semi-definite: All $k$th order leading principal minors are negative if k is odd and positive if k is even. This means for any vector $x$, $x^T A x \leq 0$.
+
+\end{itemize}
+
+\section{Gaussian Elimination}
+\subsection{Idea}
+Convert a matrix into row echelon form using elementary row operations. What this does is find a different set of equations with the same solution.
+
+The is used to:
+
+\begin{itemize}
+\item Solve a system of linear equations
+\item Find the rank of a matrix
+\item Calculate the inverse of a matrix
+\end{itemize}
+
+A system of equations is very easy to solve after it has been put in row echelon form because the last equation is immediately a solution (there is only one variable), and each row above it has only one extra variable.  Solving by this process is called back substitution.
+
+\subsection{Definitions}
+\begin{itemize}
+\item Row Echelon Form:
+	\begin{itemize}
+	\item A matrix where the leading coefficient of a row is always strictly to the right of the leading coefficient of the row above it.
+	\item All nonzero rows are above any rows of all zeros.
+	\end{itemize}
+\item Reduced Row Echelon Form: A row echelon matrix where the leading coefficients of each row is the only nonzero entry in its column.
+\end{itemize}
+
+
+\subsection{Elementary Row Operations}
+These actions can be performed on the matrix in any order
+\begin{itemize}
+\item Subtract a multiple of one row from another row.
+\item Exchange two rows.
+\item Multiply a row by a scalar.
+\end{itemize}
+
+
+\subsection{Procedure}
+\begin{itemize}
+\item Use elementary row operations to produce an echelon matrix (all entries below the diagonal are 0).
+\item The first nonzero entry in each row is called a pivot. The number of pivot columns is called the rank of $A$.
+\end{itemize}
+
+\subsection{Example}
+??? May not be correct
+Consider the system of equations:
+\begin{align*}
+2x + 4y - 2z = 2\\
+4x + 9y - 3z = 9\\
+-2x - 3y + 7z = 10
+\end{align*}
+
+Step 1: $r_2 = r_2 - 2r_1$ ($l_{2,1} = 2$)
+\begin{align*}
+2x + 4y - 2z = 2\\
+0x + 1y + 1z = 4\\
+-2x - 3y + 7z = 10
+\end{align*}
+
+Step 2: $r_3 = r_3 - (-r_1)$ ($l_{3,1} = -1$)
+\begin{align*}
+2x + 4y - 2z = 2\\
+0x + 1y + 1z = 4\\
+0x + y + 5z = 12
+\end{align*}
+
+Step 3: $r_3 = r_3 - (r_2)$ ($l_{3,2} = 1$)
+\begin{align*}
+2x + 4y - 2z = 2\\
+0x + 1y + 1z = 4\\
+0x + 0y + 4z = 8
+\end{align*}
+
+On the $i$th step, both sides of the equation are multiplied by an elimination matrix:
+$E_i Ax = E_i b$
+
+$
+\begin{pmatrix}
+1&0&0\\
+-2&1&0\\
+0&0&1 
+\end{pmatrix}
+\begin{pmatrix}
+2&4&-2\\
+4&9&-3\\
+-2&-3&7
+\end{pmatrix}
+x = 
+\begin{pmatrix}
+1&0&0\\
+-2&1&0\\
+0&0&1 
+\end{pmatrix}
+\begin{pmatrix}
+2\\
+8\\
+10
+\end{pmatrix}
+$
+
+
+So the complete elimination procedure is:
+$E_3 E_2 E_1 Ax = E_3 E_2 E_1 b$
+
+\begin{equation*}
+\begin{pmatrix}
+1&0&0\\
+0&1&0\\
+0&1&1
+\end{pmatrix}
+\begin{pmatrix}
+1&0&0\\
+0&1&0\\
+-1&0&1 
+\end{pmatrix}
+\begin{pmatrix}
+1&0&0\\
+-2&1&0\\
+0&0&1 
+\end{pmatrix}
+\begin{pmatrix}
+2&4&-2\\
+4&9&-3\\
+-2&-3&7 
+\end{pmatrix}
+ x =
+\begin{pmatrix}
+1&0&0\\
+0&1&0\\
+0&1&1 
+\end{pmatrix}
+\begin{pmatrix}
+1&0&0\\
+0&1&0\\
+-1&0&1 
+\end{pmatrix}
+\begin{pmatrix}
+1&0&0\\
+-2&1&0\\
+0&0&1 
+\end{pmatrix}
+\begin{pmatrix}
+2\\
+8\\
+10 
+\end{pmatrix}
+\end{equation*}
+
+\subsection{When Elimination Breaks}
+\subsubsection{Case 1}
+\begin{align*}
+x - 2y = 1\\
+3x - 6y = 11
+\end{align*}
+After elimination, we obtain:
+\begin{align*}
+x - 2y = 1\\
+0x + 0y = 8
+\end{align*}
+
+This can never be true, so there is no solution!
+
+\subsubsection{Case 2}
+\begin{align*}
+x - 2y = 1\\
+3x - 6y = 3
+\end{align*}
+After elimination, we obtain:
+\begin{align*}
+x - 2y = 1\\
+0x + 0y = 0
+\end{align*}
+
+This is always true no matter the choice of $x$ and $y$, so there are infinite solutions!!
+
+
+\section{Finding the Inverse (Gauss Jordan Elimination)}
+Augment the matrix by the an identity matrix.  Perform Gaussian elimination, and then continue to produce zeros above the diagonal as well. This is called reduced row echelon form. Then divide each row by its pivot. The result is 
+\begin{equation*}
+[A | I] \rightarrow [I | A^{-1}] 
+\end{equation*}
+
+
+
+\section{Matrix Factorizations}
+\subsection{LU Factorization}
+\begin{equation*}
+A = LU
+\end{equation*}
+
+\begin{itemize}
+\item L is a Lower triangular matrix
+\item U is an Upper triangular matrix
+\end{itemize}
+
+During elimination, the factors $l_{i,j}$ are exactly the $i,j$th entries of the matrix $L$.  
+
+With elimination we obtain $EA = U$.  From this we can see that $A = E^{-1} U$.  This is exactly the LU factorization.
+\begin{align*}
+U &= EA\\
+L &= E^{-1} 
+\end{align*}
+
+Of course if there is more than one elmination step the inverses of the elimination matrices must be multiplied in reverse order to get back A. That is:
+\begin{align*}
+E_2 E_1 A &= U\\
+L &= E_1 E_2
+\end{align*}
+
+\subsubsection{Example}
+??? May not be correct
+From the Gaussian elimination example:
+\begin{equation*}
+A =
+\begin{pmatrix}
+2&4&-2\\
+4&9&-3\\
+-2&-3&7 
+\end{pmatrix}
+\end{equation*}
+
+\begin{equation*}
+E = E_3 E_2 E_1 = 
+\begin{pmatrix}
+1&0&0\\
+-2&1&0\\
+-1&-1&1 
+\end{pmatrix}
+\end{equation*}
+
+\begin{equation*}
+U = EA = 
+\end{equation*}
+
+
+
+\section{QR Factorization}
+\begin{equation*}
+A = QR
+\end{equation*}
+
+\begin{itemize}
+\item Q is an orthogonal matrix.
+\item R is a Right (upper) triangular matrix.
+\end{itemize}
+
+Let A be defined by column vectors:
+\begin{equation*}
+A = [\overrightarrow{a} \overrightarrow{b} \overrightarrow{c}] 
+\end{equation*}
+
+
+
+\begin{equation*}
+A = QR = [\overrightarrow{q_1} \overrightarrow{q_2} \overrightarrow{q_3}] \begin{pmatrix} q_1^Ta&q_1^Tb&q_1^Tc\\0&q_2^Tb&q_2^Tc\\0&0&q_3^Tc \end{pmatrix}
+\end{equation*}
+
+$Q$ can be found by using the Gram-Schmidt process on the columns of A.  Then $R = Q^T A$. $R$ is upper triangular because the dot product with a vector with any of the vectors before it is 0 (they are orthogonal). The diagonal entries of $R$ are the lengths of $a$, $b$, and $c$, respectively.
+
+\subsection{Example}
+\begin{equation*}
+A = 
+\begin{pmatrix}
+1 & 2 & 3\\
+-1 & 0 & -3\\
+0 & -2 & 3
+\end{pmatrix}
+=
+\begin{pmatrix}
+\frac{1}{\sqrt{2}} & \frac{1}{\sqrt{6}} & \frac{1}{\sqrt{3}}\\
+-\frac{1}{\sqrt{2}} & \frac{1}{\sqrt{6}} & \frac{1}{\sqrt{3}}\\
+0 & -\frac{2}{\sqrt{6}} & \frac{1}{\sqrt{3}}\\
+\end{pmatrix}
+\begin{pmatrix}
+\sqrt{2} & \sqrt{2} & \sqrt{18}\\
+0 & \sqrt{6} & -\sqrt{6}\\
+0 & 0 & \sqrt{3}\\
+\end{pmatrix}
+\end{equation*}
+
+\section{RQ Factorization}
+\begin{equation*}
+A = RQ
+\end{equation*}
+The RQ factorization is similar to QR factorization, except the Gram-Schmidt is applied to the rows of $A$ instead of the columns of $A$.
+
+\section{Special Matrices}
+\subsection{Permutation Matrices}
+Has the rows of $I$ in any order (ie. each row has exactly one 1, and each column has exactly 1 one). Left multiplying by a permutation matrix re-orders the rows of $A$, while right multiplying by a permutation matrix re-orders the columns of $A$.
+\subsubsection{Properties}
+$P^T = P^{-1}$
+\subsubsection{Examples}
+$A = \begin{pmatrix}1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9\end{pmatrix}$
+$P = \begin{pmatrix}0 & 1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1\end{pmatrix}$
+$PA = $
+$AP = $
+
+\subsection{Projection Matrices}
+For any subspace, a matrix can be constructed such that when it multiplies any vector, the vector is taken into the subspace. For a one dimensional subspace (a vector), \begin{equation*}
+P=\frac{a a^T}{a^T a}
+\end{equation*}
+
+For a higher dimensional subspace, 
+\begin{equation*}
+P = A (A^T A)^{-1} A^T 
+\end{equation*}
+
+\subsubsection{Example}
+To project any vector on to the vector $a = \begin{pmatrix} 1 \\ 2 \\ 2 \end{pmatrix}$, left multiply by
+\begin{equation*}
+P=\frac{aa^T}{a^Ta} = \frac{1}{9}\begin{pmatrix}1\\2\\2\end{pmatrix}\begin{pmatrix}1&2&2\end{pmatrix} = \frac{1}{9} \begin{pmatrix}
+1&2&1\\
+2&4&4\\
+2&4&4 \end{pmatrix}
+\end{equation*}
+
+
+\subsection{Symmetric Matrices}
+A symmetric matrix $A$ has the following properties.
+\begin{itemize}
+\item $A = A^T$
+\item The eigenvalues of $A$ are real. 
+\item The eigenvectors of $A$ are orthonormal. This means that $A$ can be diagonalized with an orthogonal matrix ($A = Q\Lambda Q^T$)
+\end{itemize}
+
+\subsection{Positive Definite (PD) Matrices}
+If a matrix $A$ has one of these properties, it has them all. It is called Positive Definite because $x^TAx > 0$ when $x\neq 0$.
+\begin{itemize}
+\item $A$ is symmetric.
+\item All of the eigenvalues are $>0$.
+\item All leading principal minors are $>0$.
+\item All pivots are positive.
+\end{itemize}
+
+$\det(A) > 0$
+
+\subsection{Similar Matrices}
+$B$ is similar to $A$ if it can be written
+
+\begin{equation*}
+B = M^{-1} A M
+\end{equation*}
+
+\subsubsection{Properties}
+$B$ and $A$ have the same eigenvalues.
+
+\subsection{Orthogonal Matrices}
+An orthogonal matrix is generally denoted $Q$. 
+
+\subsubsection{Properties}
+\begin{itemize}
+\item For any shape $Q$: $Q^T Q = I$ 
+
+\item For square $Q$: $Q^T Q = Q Q^T = I$.  Only when square is it called an orthogonal matrix (vectors must also be normalized).
+
+\item Multiplication by an orthogonal matrix does not change the length of a vector: $\|Qx\|=\|x\|$
+
+\item $\det(Q) = \pm 1$
+
+\item Dot product of any two columns is $0$. This is another way of saying that the columns of $Q$ are orthogonal.
+
+\item Each column is length 1.
+
+\item The eigenvalues of an orthogonal rotation matrix must satisfy one of the following:
+\begin{itemize}
+\item All eigenvalues are 1.
+\item One eigenvalue is 1 and the other two are -1.
+\item One eigenvalue is 1 and the other two are complex conjugates of the form $e^(i \theta)$ and $e^(-i \theta)$
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The Four Subspaces}
+For the following discussion, let $A$ be an $m$ by $n$ matrix.
+
+\subsection{Column Space C(A)}
+\begin{itemize}
+\item The column space of $A$ is all linear combinations of the columns of $A$.  This is all possible vectors $Ax$. The column space can be written
+\begin{equation*}
+C(A) = Ax = x_1A_1 + x_2A_2 + ... + x_n A_n 
+\end{equation*}
+where $A_n$ is the $n$th column of $A$.
+
+\item $Ax=b$ is solvable only if b is in $C(A)$.
+
+\item Pivot columns are a basis for $C(A)$.
+
+\item The column space is a subpace of $R^m$ ($C(A) \subseteq R^m$).
+
+\item After row reduction, the column space is not the same! ($C(R) \neq C(A)$).
+
+\item The dimension of the column space is called the rank.
+
+\item The column space is also called the range.  With a function $y = f(x)$, the range is all possible values that $y$ can obtain.  The column space is exactly analogous.  The range $C(A)$ is the set of vectors $y$ that $y = Ax$ can obtain.
+\end{itemize}
+
+\subsubsection{Example}
+\begin{equation*}
+A=
+\begin{pmatrix}
+ 1 & 2\\
+2 & 4
+\end{pmatrix} 
+\end{equation*}
+
+The columns are not linearly independent, so $C(A)$ is 1 dimensional. It is spanned by $\begin{pmatrix} 1 \\ 2 \end{pmatrix}$.
+
+\subsection{Nullspace N(A)}
+\begin{itemize}
+\item All solutions to $Ax = 0$.
+
+\item The nullspace is a subspace of $R^n$ ($N(A) \subseteq R^n$).
+
+\item The dimension of the nullspace is called the nullity.
+
+\item The nullspace of the row reduced matrix is the same as the nullspace of $A$ ($N(R) = N(A)$).
+\end{itemize}
+
+\subsubsection{Procedure}
+To find the special solutions($x_s$): Set one free variable ($x_f$) at a time to 1 (set the rest to 0) and solve the system $Ax = 0$.  Each solution is a vector in $N(A)$. We do this to obtain linearly independent vectors for a basis of the nullspace.
+
+\subsubsection{Example}
+\begin{equation*}
+A = \begin{pmatrix}
+1&1&2&3\\
+2&2&8&10\\
+3&3&10&13 
+\end{pmatrix}
+\end{equation*}
+
+Perform elimination to obtain:
+\begin{equation*}
+A = \begin{pmatrix}
+1&1&2&3\\
+0&0&4&4\\
+0&0&0&0 
+\end{pmatrix}
+\end{equation*}
+
+Pivot variables are $x_1$ and $x_3$ since columns 1 and 3 contain pivots.
+
+Free variables are $x_2$ and $x_4$ since columns 2 and 4 do not contain pivots.
+
+Find Special solutions:
+
+Set $x_2=1, x_4 = 0$ and solve the system ($x_1+x_2+2x_3+3x_4=0, 4x_3+4x_4=0 \rightarrow x_1+1+2x_3+0 = 0, 4x_3+0 = 0$)
+The result is $x_3 = 0, x_2 = 1$.
+Since $x_2$ is the free variable that was set to 1, this special vector times any value of $x_2$ is a special solution.
+
+Set $x_4 = 1, x_2 = 0$ and solve the system again.  This time the result is $x_3 = -1, x_1 = -1$. Any value of $x_4$ times this vector is a special solution.
+
+The special solution is : $x_2 \begin{pmatrix}-1\\1\\0\\0\end{pmatrix}$ + $x_4 \begin{pmatrix}-1\\0\\-1\\1\end{pmatrix}$
+
+The nullspace matrix is has the special solutions as its columns:
+$N = \begin{pmatrix}
+-1&-1\\
+1&0\\
+0&-1\\
+0&1 
+\end{pmatrix}$
+
+These vectors are a basis for the nullspace.
+
+
+\subsection{Complete Solution to Ax=b}
+The complete solution only involves the column space and the nullspace. Geometrically, the solution to $Ax=b$ is simply a translation of the solution to $Ax=0$.
+
+Particular solutions($x_p$): 
+
+Set all the free variables to 0 and solve $Ax=b$.
+
+The complete solution is $ x = x_p + x_{f_1} x_{s_1} + ... + x_{f_n} x_{s_n}$
+
+\subsubsection{Example}
+Taking the same matrix from the nullspace example, we set $x_2 = x_4 = 0$ and solve the system.
+
+\subsection{Row Space}
+\begin{itemize}
+\item The row space is the span of the rows of $A$. It is identically the column space of $A^T$, so it is denoted $C(A^T)$.  The pivot rows are a basis for the rowspace. 
+
+\item The rowspace is not changed during row reduction ($C(R^T) = C(A^T)$). This is because we are simply producing linear combinations of the rows.  Since the rowspace is spanned by the initial rows, it is also spanned by linear combinations of them.
+
+
+\end{itemize}
+\subsubsection{Connection to the Nullspace}
+$Ax$ can also be written $\begin{pmatrix} r_1 \dotprod x \\ r_2 \dotprod x \\ \vdots \\ r_n \dotprod x \end{pmatrix}$ where $r_n$ is the $n$th row of $A$. From this we see another interpretation of the nullspace.  $Ax = 0$ only if the dot product of each row with $x$ is $0$.  That means each row is orthogonal to $x$.
+
+
+\subsection{Left Null Space}
+\begin{itemize}
+\item $N(A^T) \subseteq R^m$
+
+\item $A^T y = 0$
+
+\item Contains the error of the least squares solution.
+
+\item Orthogonal to $C(A)$.
+\end{itemize}
+
+\subsection{Summary}
+The number of solutions can be summarized with the following table:
+\begin{table}[H]
+\centering
+\begin{tabular}{c|c|c|}
+Shape & Shape Description & Number of Solutions\\
+\hline
+$r=m=n$ & square & 1\\
+$r=m, r<n$ & short and fat & $\infty$\\
+$r<m, r=n$ & tall and skinny & 0 or 1\\
+$r<m, r<n$ & degenerate & 0 or $\infty$
+\end{tabular}
+\end{table}
+
+The relationship of the four subspaces can be summarized with the following table:
+\begin{table}[H]
+\centering
+\begin{tabular}{c|c|c|c|}
+Space & $\perp$ Complement & Subspace of & Dimension\\
+\hline
+$C(A^T)$ & $N(A)$ & $R^n$ & $r$\\
+$C(A)$ & $N(A^T)$ & $R^m$ & $r$\\
+$N(A)$ & $C(A^T)$ & $R^n$ & $n-r$\\
+$N(A^T)$ & $C(A)$ & $R^m$ & $m-r$
+\end{tabular}
+\end{table}
+
+
+\section{Least Squares}
+When $Ax=b$ is not solvable, use $A^TAx=A^Tb$, which is $x = (A^T A)^{-1} A^T b$.  This minimizes $\|Ax - b\|^2$.
+
+This comes from knowing that the minimum error is achieved when the error is orthogonal to the estimate.  We can write
+\begin{equation*}
+A^T (b - A\hat{x}) = 0
+\end{equation*}
+
+by expanding this, we obtain the equation $A^T b = A^T A \hat{x}$.  The solution to this is the least squares solution.
+
+
+\subsection{Example}
+!!!Test
+\begin{alignat*}{4}
+x &+ y &+ z &= -2 && x \\
+x &+ y &+ z &= 6 \\
+x &+ &+ z &= 1 
+\end{alignat*}
+\begin{alignat*}{2}
+x &+ y &+ z &= -2 \\
+x &+ y &+ z &= 6 \\
+x &+ &+ z &= 1 
+\end{alignat*}
+
+Consider the equations:
+\begin{alignat*}{3}
+x_1 &+ 4x_2 &= -2 \\
+x_1 &+ 2x_2 &= 6 \\
+2x_1 &+ 3x_2 &= 1 
+\end{alignat*}
+
+They are written in matrix form as:
+\begin{equation*}
+A = \begin{pmatrix} 1 & 4 \\ 1 & 2 \\ 2 & 3 \end{pmatrix} \hspace{.5in}
+b = \begin{pmatrix} -2 \\ 6 \\ 1 \end{pmatrix}
+\end{equation*}
+
+We find $A^T A = \begin{pmatrix} 6 & 12 \\ 12 & 29 \end{pmatrix}$ and $A^T b = \begin{pmatrix} 6 \\7 \end{pmatrix}$.
+
+Therefore the least squares solution is $x^* = \begin{pmatrix} 3 \\ -1 \end{pmatrix}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Gram Schmidt Orthogonalization}
+Consider three vectors: $a$, $b$, and $c$. The goal is to produce orthonormal vectors which span the same space as the original vectors. The first orthogonal vector is chosen to be exactly vector $a$ (this is an arbitrary choice, the procedure can start with any of them). A vector orthogonal to $a$ can be produced by projecting $b$ onto $a$ and subtracting the result from $b$.  The next orthogonal vector can be found by subtracting the projection of $c$ onto $a$ and the projection of $c$ onto $b$ from $c$.  These three vectors are orthogonal, so we simply normalize them to obtain our orthonormal basis.
+\begin{align*}
+\tilde{q}_1 &= a \\
+\tilde{q}_2 &= b - proj_{q_1}b = b-\frac{q_1q_1^T}{q_1^Tq_1}b \\
+\tilde{q}_3 &= c - proj_{q_1}c - proj_{q_2}c = c - \frac{q_1q_1^T}{q_1^Tq_1}c - \frac{q_2q_2^T}{q_2^Tq_2} c
+\end{align*}
+
+\begin{align*}
+q_1 &= \frac{\tilde{q}_1}{\|\tilde{q}_1\|}\\
+q_2 &= \frac{\tilde{q}_2}{\|\tilde{q}_2\|}\\
+q_3 &= \frac{\tilde{q}_3}{\|\tilde{q}_3\|}
+\end{align*}
+
+During these operations, it is convenient to notice that if we compute the actual projection matrix for each vector, it results in a big matrix multiplication, ie. $q_2 = b - proj_{q1}b = b - \frac{q_1 q_1^T}{q_1^T q_1} b$; the denominator is a scalar.  The numerator becomes a 3x3 matrix if we perform $(q_1 q_1^T)b$. However, if we notice $q_1^T b$ is a scalar, this can be performed first, resulting in a vector times a scalar $q_1 (q_1^T b)$. This is clearly much easier.
+
+\subsection{Example}
+Consider the three vectors
+\begin{equation*}
+a = \begin{pmatrix}1\\-1\\0\end{pmatrix} \hspace{.5in}
+b = \begin{pmatrix}2\\0\\-2\end{pmatrix} \hspace{.5in}
+c = \begin{pmatrix}3\\-3\\3\end{pmatrix}
+\end{equation*}
+
+The solution is:
+\begin{equation*}
+\tilde{q}_1 = \begin{pmatrix}1\\-1\\0\end{pmatrix} \hspace{.5in}
+\tilde{q}_2 = \begin{pmatrix}1\\1\\-2\end{pmatrix} \hspace{.5in}
+\tilde{q}_3 = \begin{pmatrix}1\\1\\1\end{pmatrix}
+\end{equation*}
+
+Where $q_1 = \frac{\tilde{q}_1}{\sqrt{2}}$, $q_2 = \frac{\tilde{q}_2}{\sqrt{6}}$, and $q_3 = \frac{\tilde{q}_3}{\sqrt{3}}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Determinants}
+\subsection{Idea}
+\begin{itemize}
+\item Determinants are a way to determine if a system of linear equations has a unique solution. If the determinant is 0, the matrix is singular.
+
+\item The geometric interpretation is to take a unit cube in $R^n$ and multiply each of its corners by $A$.  The area of the resulting volume (a parallelepiped) is equal to the determinant of $A$. In $R^2$, $A = \begin{pmatrix}a & b \\ c & d \end{pmatrix}$ brings a square with corners (0,0), (1, 0), (0, 1), (1, 1) to a parallelogram with corners (0, 0), (a, c), (a+b, c+d), (b, d).
+
+\item The determinant function associates a scalar value with a matrix.
+\end{itemize}
+
+\subsection{Procedure}
+\subsubsection{2x2}
+\begin{equation*}
+\det\left(\left[\begin{array}{cc}a&b\\c&d\end{array}\right]\right) = \left| \begin{array}{cc}a&b\\c&d\end{array}\right| = ad-bc
+\end{equation*}
+
+\begin{equation*}
+A^{-1} = \frac{1}{\det(A)} \begin{pmatrix}d&-b\\-c&a\end{pmatrix} = \frac{1}{ad-bc}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}
+\end{equation*}
+
+\subsubsection{3x3}
+There are two methods:
+
+\paragraph{Method 1: Augment}
+\begin{equation*}
+\begin{pmatrix}
+a & b & c & \vline & a & b\\
+d & e & f & \vline & e & e\\
+g & h & i & \vline & g & h
+\end{pmatrix}
+\end{equation*}
+
+Calculate the sum of the products of the right diagonals and then subtract the sum of the products of the left diagonals.
+
+\paragraph{Method 2: Cofactors}
+\begin{equation*}
+a \det \begin{pmatrix}e&f\\h&i\end{pmatrix} - b \det \begin{pmatrix}d&f\\g&i\end{pmatrix} + c \det \begin{pmatrix}d&e\\g&h\end{pmatrix}
+\end{equation*}
+
+\subsection{Rules}
+\begin{enumerate}
+\item{$\det(I) = 1$}
+\item{Sign of determinant changes when rows are exchanged.}
+\item{Subtracting a multiple of one row from another leaves det unchagned}
+\item{If $A$ is triangular, the product of the diagonal is the determinant. ($\det(A) = \Pi_{i}a_{ii}$)}
+\item{If $A$ is singular, $\det(A) = 0$}
+\item{If $A$ is invertible, $\det(A) \neq 0$}
+\item{$\det(AB) = \det(A) \det(B)$}
+\item{$\det(A^T) = \det(A)$}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Eigenvalues and Eigenvectors}
+Eigenvectors are vectors which when multiplied by a matrix do not rotate, but simply are scaled. 
+\begin{equation*}
+Ax = \lambda x 
+\end{equation*}
+The vector which is not rotated is $x$ and the value $\lambda$ is the amount that $x$ is stretched when multiplied by $A$.
+
+\subsection{Procedure}
+\subsubsection{Finding Eigenvalues}
+Solve $Ax = \lambda x$, 
+\begin{equation*}
+Ax - \lambda x = (A-\lambda I)x = 0 
+\end{equation*}
+This is called the characteristic equation.  For there to be a non-trivial solution, $(A-\lambda I)$ must not be invertible.  We assume this is true by saying $det(A-\lambda I) = 0$ and then solving for $\lambda$.
+
+\subsubsection{Finding Corresponding Eigenvectors}
+To find the eigenvector corresponding to the $i$th eigenvalue, solve $(A-\lambda_i I)x=0$
+
+\subsection{Properties}
+\begin{itemize}
+\item Geometric Multiplicity (GM) = The nullspace of $A - \lambda_n I$ is called the eigenspace of $\lambda_n$. The dimension of the eigenspace is called the geometric multiplicity.
+
+\item Algebraic Multiplicity (AM) = The number of times an eigenvalue is repeated as a root of the characteristic equation.
+
+\item If $GM < AM$, A is not diagonalizable.
+
+\item When a matrix is raised to a power $n$, this is the same as applying the matrix $n$ times.  Therefore, when it acts on an eigenvector $v$, each application of $A$ stretches $v$ by the associated eigenvalue.  This mean the eigenvectors of $A^n$ are $\lambda^n$.
+\end{itemize}
+
+\subsection{Example}
+
+\subsection{Repeated Eigenvalues/Generalized Eigenvectors}
+If the dimension of the nullspace of $A-\lambda_n I$ is less than the multiplicity of the eigenvalue, we must find generalized eigenvectors and the best we can do is $A = SJS^{-1}$ (we can't diagonalize the matrix, we can only write it as a Jordan form).
+
+We find these vectors by solving:
+\begin{equation*}
+(A-\lambda I)x_k = x_{k-1}
+\end{equation*}
+where $x_0 = 0$.
+
+This is equivalent to saying
+\begin{equation*}
+(A-\lambda I)^k x_k = 0
+\end{equation*}
+
+\subsubsection{Example}
+\begin{equation*}
+A = \begin{pmatrix}
+1&1\\
+0&1 \end{pmatrix}
+\end{equation*}
+
+The eigenvalues of $A$ are $\lambda_1 = 1$ and $\lambda_2 = 1$. We find one eigenvector by solving $(A - \lambda_1 I)x_1 = (A - 1 I)x_1 = 0$. We find the eigenvector $x_1 = \begin{pmatrix}1\\0\end{pmatrix}$. We then solve $(A - \lambda_2 I)x_2 = (A-1I)x_2 = x_1$.  We obtain $x_2 = \begin{pmatrix}0\\1\end{pmatrix}$. This is a generalized eigenvector.
+
+
+\subsection{Properties}
+\begin{itemize}
+\item $\Pi_i \lambda_i = det(A)$
+
+\item $\sum_i \lambda_i = trace(A)$ (The trace is $tr(A) = \sum_i A_{ii}$)
+\end{itemize}
+
+\subsection{Diagonalization}
+Let $S$ be the matrix with the eigenvectors of $A$ as its columns.  $\Lambda$ is the matrix with the eigenvalues of A on the diagonal. 
+\begin{equation*}
+A=S\Lambda S^{-1} 
+\end{equation*}
+
+This is very helpful in raising matrices to powers.  If $A$ is in the form $A=S\Lambda S^{-1}$ then $A^2=S\Lambda S^{-1} S \Lambda S^{-1} = S \Lambda^2 S^{-1}$ and in general $A^n=S \Lambda^n S^{-1}$.  
+
+If the matrix cannot be diagonalized, then the SVD must be used.
+
+\subsubsection{Exponential of a Matrix}
+We wish to find 
+\begin{equation*}
+e^{At} 
+\end{equation*}
+
+Look at the Taylor series expansion of $e^x$ around 0. 
+\begin{equation*}
+e^x = 1 + x+ \frac{1}{2}x^2 + \frac{1}{6}x^3 + ...
+\end{equation*}
+
+Substitue $x = At$ to obtain
+\begin{equation*}
+e^{At} = I + At + \frac{1}{2}(At)^2 + \frac{1}{6}(At)^3 + ...
+\end{equation*}
+
+Substitue the diagonalized version of A ($S\Lambda S^{-1}$)
+\begin{equation*}
+e^{At} = I + S\Lambda S^{-1}t + \frac{1}{2}(S\Lambda S^{-1}t)^2 + ... = I + tS\Lambda S^{-1} + \frac{1}{2}(t\Lambda)^2 S S^{-1} S S^{-1} + ...
+\end{equation*}
+
+The same series appears again in the middle of the expression.
+
+\begin{equation*}
+e^{At} = S e^{\lambda t} S^{-1} 
+\end{equation*}
+It's eigenvalues are $e^{\lambda t}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Singular Value Decomposition (SVD)}
+We want to find an orthogonal matrix that will diagonalize $A$. This is impossible, so we must find and orthogonal basis for the column space and an orthogonal basis for the row space. We also want $Av_1 = \sigma_1 u_1$ and $Av_2 = \sigma_2 u_2$, or $AV = U \Sigma$.
+
+\begin{equation*}
+A=U\Sigma V^T 
+\end{equation*}
+
+Let $A$ be an m by n matrix.
+
+\subsection{U}
+$U$ is a m by m orthonormal matrix. The columns of $U$ are the eigenvectors of $A A^T$. These are called the ``left singular vectors''. The left singular vectors corresponding to the non-zero singular values of $A$ (there are $r$ of them) span $C(A)$. The columns of $U$ which correspond to zero singular values (there are $m-r$ of them) span the left null space of $A$.
+
+\subsection{Sigma}
+$\Sigma$ is a m by n diagonal matrix.  $\Sigma$ is the matrix with $\sigma_i$ on the diagonal. The eigenvalues of $AA^T$ and $A^TA$ are $\sigma_i^2$. The rank is equal to the number of non-zero singular values.
+
+\subsection{V}
+$V$ is a n by n orthonormal matrix. The columns of $V$ are eigenvectors of $A^T A$. These are called the ``right singular vectors''. The columns of $V$ which correspond to non-zero singular values (there are $r$ of them) span the row space of $A$. The right singular values corresponding to the zero singular values (there are $n-r$ of them) span the $N(A)$. 
+
+\subsection{Geometric Interpretation}
+Let $x$ be a vector. When $x$ is multiplied by $V^T$, this is simply a change of basis, so $x$ is now represented in a new coordinate system, where the basis vectors are the columns of $V$. We will call this resulting vector $x_v$.
+
+When $x_v$ is multiplied by $\Sigma$, it is scaled in each dimension (now the columns of $V$) by the corresponding singular values of $A$. We will call this resulting vector $x_s$.
+
+When $x_s$ is multiplied by $U$, it is simply rotated back to the original coordinate system.
+
+??? $A$ takes a vector $x$ and computes the coefficients of $x$ along the input directions $v_1,... v_n$. The input vector space is $R^n$ because the matrix must be multiplied by an $n$ x Something matrix. Then it scales the vector by the singular values. Then it writes the vector as a combination of $u_1, ... , u_n$.
+
+Uses a different basis for row and column space.
+
+\subsection{Mini-Proof}
+To show that the eigenvalues of $AA^T$ and $A^TA$ are the singular values of A, start with $Av = \sigma u$ and $A^Tu=\sigma v$.  Solve for $u$ in the first equation and substitute into the second to obtain $A^TAv=\sigma^2 v$.  You can do the reverse (solve for $v$ in the second equation and substitute into the first) to obtain $AA^Tu=\sigma^2 u$.
+
+Using this, we can now show that the SVD diagonalizes A.
+Start with $A^TAv_i = \sigma_i^2 v_i$ (from above).
+Multiply by $v_i^T$:
+$v_i^T A^T A v_i = \sigma_i^2 v_i^T v_i \rightarrow \|Av_i\|^2 = \sigma_i^2$, so $\|Av_i\| = \sigma_i$. This was from seeing $(v_i ^T A^T)(A v_i)$ is a vector times its transpose.
+Then again start with $A^TAv_i = \sigma_i^2 v_i$, but now multiply by $A$:
+$A A^T A v_i = \sigma_i^2 A v_i \rightarrow u_i = A v_i / \sigma_i$. This shows that $A v_i$ is an eigenvector of $AA^T$.
+
+\subsection{Example}
+\begin{align*}
+A &= \begin{pmatrix} .96 & 1.72 \\ 2.28 & .96\end{pmatrix} \\
+ &= U \Sigma V^T = \begin{pmatrix} .6 & -.8 \\ .8 & .6 \end{pmatrix} \begin{pmatrix} 3 & 0 \\ 0 & 1 \end{pmatrix} \begin{pmatrix} .8 & .6 \\ .6 & -.8 \end{pmatrix}^T
+\end{align*}
+
+We can see that the columns of $U$ and $V$ are unit length and mutually orthogonal.
+ex. $.6^2 + .8^2 = 1$
+$u_1 \dotprod u_2 = 0$
+
+\subsection{Solving Linear Equations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Summary}
+Now that we have an introduction to the topic, below is a useful summary that can be used to quickly answer common question.
+
+\subsection{Finding the Rank of a Matrix}
+\begin{itemize}
+\item Gaussian elimination.
+\item If the matrix is square, find the number of non zero eigenvalues.
+\item If the matrix is not square, find the number of non zero singular values.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Practical Matrix Operations}
+\begin{itemize}
+\item Inverse: $(AB)^{-1} = B^{-1}A^{-1}$
+
+\item Transpose: $(AB)^T = B^T A^T$
+
+\item Derivative: $\frac{d}{dx} Ax = A$
+
+\item Derivative of quadratic form: $\frac{d}{dx} x^T A x = 2Ax$
+\end{itemize}
+
+\end{document}
